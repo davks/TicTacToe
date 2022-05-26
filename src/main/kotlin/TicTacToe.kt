@@ -71,10 +71,13 @@ class TicTacToe {
 
     private fun convertToBoard(): Array<Array<Char>> {
         var board = arrayOf<Array<Char>>()
+        var cur = 0
+
         for (i in 0 until FIELD) {
             var row = arrayOf<Char>()
             for (j in 0 until FIELD) {
-                row += cells[i * j]
+                row += cells[cur]
+                cur++
             }
             board += row
         }
@@ -195,6 +198,7 @@ class TicTacToe {
         println("Player X = $winX")
         println("Player O = $winO")
         println("Draw     = $draw")
+        println("------------")
     }
 
     private fun changePlayer() {
