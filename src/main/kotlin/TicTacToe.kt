@@ -6,6 +6,9 @@ class TicTacToe {
     private var currentPlayer = 'X'
     private var endGame = false
     private var playerWin: Char? = null
+    private var winX = 0
+    private var winY = 0
+    private var draw = 0
 
     init {
         cells = setCells()
@@ -23,7 +26,19 @@ class TicTacToe {
             enterCoordinates()
             move()
         }
-        score()
+        setScore()
+        showScore()
+    }
+
+    fun playAgain(): Boolean {
+        print("\nDo you want play again? (y/n): ")
+        val res = readln()
+        return if (res == "y") {
+            clean()
+            true
+        } else {
+            false
+        }
     }
 
     private fun move() {
@@ -85,8 +100,8 @@ class TicTacToe {
         coordinates = Coordinates(0, 0)
 
         print("Enter coordinates: ")
-        val coordinatesStr = readln()
-        if (coordinatesStr.trim().contains(" ")) {
+        val coordinatesStr = readln().trim()
+        if (coordinatesStr.contains(" ")) {
             val (yStr, xStr) = coordinatesStr.split(" ")
             val y = yStr.toIntOrNull()
             val x = xStr.toIntOrNull()
@@ -160,15 +175,39 @@ class TicTacToe {
         }
     }
 
-    private fun score() {
+    private fun setScore() {
         if (playerWin != null) {
-            println("$playerWin wins")
+            if (playerWin == 'X') winX++ else winY++
         } else {
-            println("Draw")
+            draw++
         }
+    }
+
+    private fun showScore() {
+        if (playerWin != null) {
+            println("$playerWin wins\n")
+        } else {
+            println("Draw\n")
+        }
+
+        println("Score:")
+        println("------------")
+        println("Player X = $winX")
+        println("Player O = $winY")
+        println("Draw     = $draw")
     }
 
     private fun changePlayer() {
         currentPlayer = if (currentPlayer == 'X') 'O' else 'X'
+    }
+
+    private fun clean() {
+        cells = setCells()
+        board = convertToBoard()
+        coordinates = Coordinates(0, 0)
+        errorMessage = ""
+        currentPlayer = 'X'
+        endGame = false
+        playerWin = null
     }
 }
