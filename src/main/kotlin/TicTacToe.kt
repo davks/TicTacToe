@@ -7,7 +7,7 @@ class TicTacToe {
     private var endGame = false
     private var playerWin: Char? = null
     private var winX = 0
-    private var winY = 0
+    private var winO = 0
     private var draw = 0
 
     init {
@@ -177,7 +177,7 @@ class TicTacToe {
 
     private fun setScore() {
         if (playerWin != null) {
-            if (playerWin == 'X') winX++ else winY++
+            if (playerWin == 'X') winX++ else winO++
         } else {
             draw++
         }
@@ -193,7 +193,7 @@ class TicTacToe {
         println("Score:")
         println("------------")
         println("Player X = $winX")
-        println("Player O = $winY")
+        println("Player O = $winO")
         println("Draw     = $draw")
     }
 
