@@ -1,6 +1,6 @@
 # TicTacToe
 
-Console demo application as a task from JetBrains Academy.
+Console demo application as a task from JetBrains Academy. It is possible to expand the playing field.
 
 ```
 ---------

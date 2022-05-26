@@ -210,7 +210,7 @@ class TicTacToe(private var fieldLength: Int = 3) {
     }
 
     /**
-     * Check diagonal from top/left to right
+     * Check diagonally from top/left to right
      */
     private fun checkBoardDiagonallyXY() {
         for (k in 0 until fieldLength) {
@@ -228,7 +228,7 @@ class TicTacToe(private var fieldLength: Int = 3) {
     }
 
     /**
-     * Check diagonal from top/right to bottom
+     * Check diagonally from top/right to bottom
      */
     private fun checkBoardDiagonallyY() {
         for (k in 0 until fieldLength) {
@@ -243,7 +243,7 @@ class TicTacToe(private var fieldLength: Int = 3) {
     }
 
     /**
-     * Check diagonal from top/right to left
+     * Check diagonally from top/right to left
      */
     private fun checkBoardDiagonallyX() {
         for (k in 0 until fieldLength) {
