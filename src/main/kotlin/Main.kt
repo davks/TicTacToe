@@ -1,5 +1,5 @@
 fun main() {
-    val ttt = TicTacToe()
+    val ttt = TicTacToe(7)
 
     do {
         ttt.play()
