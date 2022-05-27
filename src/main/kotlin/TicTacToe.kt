@@ -16,8 +16,8 @@ class TicTacToe(private var fieldLength: Int = 3) {
         if (fieldLength < 3) fieldLength = 3
         cells = setCells()
         board = convertToBoard()
-        lineCompleteX = setLineComplete("X")
-        lineCompleteO = setLineComplete("O")
+        lineCompleteX = setLineComplete(X)
+        lineCompleteO = setLineComplete(O)
     }
 
     companion object {
@@ -279,11 +279,11 @@ class TicTacToe(private var fieldLength: Int = 3) {
         return line
     }
 
-    private fun setLineComplete(str: String): String {
+    private fun setLineComplete(ch: Char): String {
         val lineComplete = if(fieldLength >= 5) 5 else 3
         var line = ""
         for (i in 1..lineComplete) {
-            line += str
+            line += ch
         }
         return line
     }
