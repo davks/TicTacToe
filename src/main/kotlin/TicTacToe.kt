@@ -9,20 +9,21 @@ class TicTacToe(private var fieldLength: Int = 3) {
     private var winX = 0
     private var winO = 0
     private var draw = 0
-    private var rowCompletX: String
-    private var rowCompletO: String
+    private var lineCompleteX: String
+    private var lineCompleteO: String
 
     init {
         if (fieldLength < 3) fieldLength = 3
         cells = setCells()
         board = convertToBoard()
-        rowCompletX = setRowComplet("X")
-        rowCompletO = setRowComplet("O")
+        lineCompleteX = setLineComplete("X")
+        lineCompleteO = setLineComplete("O")
     }
 
     companion object {
         private const val X = 'X'
         private const val O = 'O'
+        private const val EC = '⋅'
     }
 
     fun play() {
@@ -37,10 +38,10 @@ class TicTacToe(private var fieldLength: Int = 3) {
     }
 
     fun playAgain(): Boolean {
-        print("\nDo you want play again? (y/n): ")
+        print("\nDo you want to play again? (y/n): ")
         val res = readln()
         return if (res == "y") {
-            clean()
+            cleanBoard()
             true
         } else {
             false
@@ -76,15 +77,15 @@ class TicTacToe(private var fieldLength: Int = 3) {
     }
 
     private fun showBoard() {
-        var rows = "${setLine()}\n"
+        var rows = "${setBoardLine()}\n"
         for (i in 0 until fieldLength) {
             var row = ""
             for (j in 0 until fieldLength) {
                 row += "${board[i][j]} "
             }
-            rows += "| ${row}|\n"
+            rows += "${i + 1} ${row}${i + 1}\n"
         }
-        rows += setLine()
+        rows += setBoardLine()
 
         println(rows)
     }
@@ -119,7 +120,7 @@ class TicTacToe(private var fieldLength: Int = 3) {
 
     private fun editBoard(): Boolean {
         var addPlayer = false
-        if (board[coordinates.y - 1][coordinates.x - 1] == ' ') {
+        if (board[coordinates.y - 1][coordinates.x - 1] == EC) {
             board[coordinates.y - 1][coordinates.x - 1] = currentPlayer
             addPlayer = true
         }
@@ -135,7 +136,7 @@ class TicTacToe(private var fieldLength: Int = 3) {
         var fullBoard = 0
         for (i in 0 until fieldLength) {
             for (j in 0 until fieldLength) {
-                if (board[i][j] != ' ') {
+                if (board[i][j] != EC) {
                     fullBoard++
                 }
             }
@@ -171,7 +172,7 @@ class TicTacToe(private var fieldLength: Int = 3) {
         currentPlayer = if (currentPlayer == X) O else X
     }
 
-    private fun clean() {
+    private fun cleanBoard() {
         cells = setCells()
         board = convertToBoard()
         coordinates = Coordinates(0, 0)
@@ -182,30 +183,22 @@ class TicTacToe(private var fieldLength: Int = 3) {
     }
 
     private fun checkBoard() {
-        checkBoardHorizontally()
-        checkBoardVertically()
+        checkBoardHorizontallyAndVertically()
         checkBoardDiagonallyXY()
         checkBoardDiagonallyX()
         checkBoardDiagonallyY()
     }
 
-    private fun checkBoardHorizontally() {
+    private fun checkBoardHorizontallyAndVertically() {
         for (i in 0 until fieldLength) {
-            var row = ""
+            var rowX = ""
+            var rowY = ""
             for (j in 0 until fieldLength) { // row
-                row += board[i][j]
+                rowX += board[i][j]
+                rowY += board[j][i]
             }
-            setWinner(row)
-        }
-    }
-
-    private fun checkBoardVertically() {
-        for (i in 0 until fieldLength) {
-            var row = ""
-            for (j in 0 until fieldLength) { // row
-                row += board[j][i]
-            }
-            setWinner(row)
+            checkWinner(rowX)
+            checkWinner(rowY)
         }
     }
 
@@ -214,16 +207,16 @@ class TicTacToe(private var fieldLength: Int = 3) {
      */
     private fun checkBoardDiagonallyXY() {
         for (k in 0 until fieldLength) {
-            var diagonalX = ""
-            var diagonalY = ""
+            var diagonallyX = ""
+            var diagonallyY = ""
             for (i in 0 until fieldLength) {
                 for (j in i + k until fieldLength step fieldLength) {
-                    diagonalX += "${board[i][j]}"
-                    diagonalY += "${board[j][i]}"
+                    diagonallyX += "${board[i][j]}"
+                    diagonallyY += "${board[j][i]}"
                 }
             }
-            setWinner(diagonalX)
-            setWinner(diagonalY)
+            checkWinner(diagonallyX)
+            checkWinner(diagonallyY)
         }
     }
 
@@ -232,13 +225,13 @@ class TicTacToe(private var fieldLength: Int = 3) {
      */
     private fun checkBoardDiagonallyY() {
         for (k in 0 until fieldLength) {
-            var diagonal = ""
+            var diagonally = ""
             for (i in 0 + k until fieldLength) {
                 for (j in fieldLength - 1 - i + k downTo 0 step fieldLength) {
-                    diagonal += "${board[i][j]}"
+                    diagonally += "${board[i][j]}"
                 }
             }
-            setWinner(diagonal)
+            checkWinner(diagonally)
         }
     }
 
@@ -247,21 +240,21 @@ class TicTacToe(private var fieldLength: Int = 3) {
      */
     private fun checkBoardDiagonallyX() {
         for (k in 0 until fieldLength) {
-            var diagonal = ""
+            var diagonally = ""
             for (i in 0 until fieldLength) {
                 for (j in fieldLength - 1 - k - i  downTo 0 step fieldLength) {
-                    diagonal += "${board[i][j]}"
+                    diagonally += "${board[i][j]}"
                 }
             }
-            setWinner(diagonal)
+            checkWinner(diagonally)
         }
     }
 
-    private fun setWinner(str: String) {
-        if (str.contains(rowCompletX)) {
+    private fun checkWinner(str: String) {
+        if (str.contains(lineCompleteX)) {
             playerWin = X
         }
-        if (str.contains(rowCompletO)) {
+        if (str.contains(lineCompleteO)) {
             playerWin = O
         }
 
@@ -273,23 +266,23 @@ class TicTacToe(private var fieldLength: Int = 3) {
     private fun setCells(): String {
         var cells = ""
         for (i in 1 .. fieldLength * fieldLength) {
-            cells = cells.plus(' ')
+            cells = cells.plus(EC)
         }
         return cells
     }
 
-    private fun setLine(): String {
-        var line = ""
-        for (i in 1..fieldLength * 2 + 3) {
-            line = line.plus('-')
+    private fun setBoardLine(): String {
+        var line = "  "
+        for (i in 1..fieldLength) {
+            line = line.plus("$i ")
         }
         return line
     }
 
-    private fun setRowComplet(str: String): String {
-        val rowComplet = if(fieldLength >= 5) 5 else 3
+    private fun setLineComplete(str: String): String {
+        val lineComplete = if(fieldLength >= 5) 5 else 3
         var line = ""
-        for (i in 1..rowComplet) {
+        for (i in 1..lineComplete) {
             line += str
         }
         return line
