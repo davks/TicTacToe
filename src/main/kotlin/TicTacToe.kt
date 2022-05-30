@@ -1,3 +1,5 @@
+import kotlin.math.abs
+
 class TicTacToe(private var fieldLength: Int = 3) {
     private var cells: String
     private var board: Array<Array<Char>>
@@ -96,7 +98,7 @@ class TicTacToe(private var fieldLength: Int = 3) {
         print("Enter coordinates ($currentPlayer): ")
         val coordinatesStr = readln().trim()
         if (coordinatesStr.contains(" ")) {
-            val (yStr, xStr) = coordinatesStr.split(" ")
+            val (xStr, yStr) = coordinatesStr.split(" ")
             val y = yStr.toIntOrNull()
             val x = xStr.toIntOrNull()
 
@@ -120,8 +122,8 @@ class TicTacToe(private var fieldLength: Int = 3) {
 
     private fun editBoard(): Boolean {
         var addPlayer = false
-        if (board[coordinates.y - 1][coordinates.x - 1] == EC) {
-            board[coordinates.y - 1][coordinates.x - 1] = currentPlayer
+        if (board[coordinates.x - 1][coordinates.y - 1] == EC) {
+            board[coordinates.x - 1][coordinates.y - 1] = currentPlayer
             addPlayer = true
         }
 
@@ -184,70 +186,75 @@ class TicTacToe(private var fieldLength: Int = 3) {
 
     private fun checkBoard() {
         checkBoardHorizontallyAndVertically()
-        checkBoardDiagonallyXY()
-        checkBoardDiagonallyX()
-        checkBoardDiagonallyY()
+        checkBoardDiagonallyLeftToRight()
+        checkBoardDiagonyllyRightToLeft()
     }
 
     private fun checkBoardHorizontallyAndVertically() {
+        val (x, y) = coordinates
+        var rowX = ""
+        var rowY = ""
+
         for (i in 0 until fieldLength) {
-            var rowX = ""
-            var rowY = ""
-            for (j in 0 until fieldLength) { // row
-                rowX += board[i][j]
-                rowY += board[j][i]
-            }
-            checkWinner(rowX)
-            checkWinner(rowY)
+            rowX += board[x - 1][i]
+            rowY += board[i][y - 1]
         }
+
+        checkWinner(rowX)
+        checkWinner(rowY)
+
+    }
+    private fun checkBoardDiagonallyLeftToRight() {
+        var (x, y) = coordinates
+        var diagonally = ""
+
+        x--
+        y--
+
+        if (x - y > 0) {
+            x -= y
+            y = 0
+        } else if (x - y < 0) {
+            y = abs(x - y)
+            x = 0
+        } else {
+            x = 0
+            y = 0
+        }
+
+        for (i in x until fieldLength) {
+            for (j in y until fieldLength step fieldLength) {
+                diagonally += "${board[i][j]}"
+                y++
+            }
+        }
+
+        checkWinner(diagonally)
     }
 
-    /**
-     * Check diagonally from top/left to right
-     */
-    private fun checkBoardDiagonallyXY() {
-        for (k in 0 until fieldLength) {
-            var diagonallyX = ""
-            var diagonallyY = ""
-            for (i in 0 until fieldLength) {
-                for (j in i + k until fieldLength step fieldLength) {
-                    diagonallyX += "${board[i][j]}"
-                    diagonallyY += "${board[j][i]}"
-                }
-            }
-            checkWinner(diagonallyX)
-            checkWinner(diagonallyY)
-        }
-    }
+    private fun checkBoardDiagonyllyRightToLeft() {
+        var (x, y) = coordinates
+        var diagonally = ""
 
-    /**
-     * Check diagonally from top/right to bottom
-     */
-    private fun checkBoardDiagonallyY() {
-        for (k in 0 until fieldLength) {
-            var diagonally = ""
-            for (i in 0 + k until fieldLength) {
-                for (j in fieldLength - 1 - i + k downTo 0 step fieldLength) {
-                    diagonally += "${board[i][j]}"
-                }
-            }
-            checkWinner(diagonally)
-        }
-    }
+        x--
+        y--
 
-    /**
-     * Check diagonally from top/right to left
-     */
-    private fun checkBoardDiagonallyX() {
-        for (k in 0 until fieldLength) {
-            var diagonally = ""
-            for (i in 0 until fieldLength) {
-                for (j in fieldLength - 1 - k - i  downTo 0 step fieldLength) {
-                    diagonally += "${board[i][j]}"
-                }
-            }
-            checkWinner(diagonally)
+        if (x + y <= fieldLength - 1) {
+            y += x
+            x = 0
+        } else {
+            x = y + x - (fieldLength - 1)
+            y = fieldLength - 1
         }
+
+        for (i in x until fieldLength) {
+            for (j in y downTo  0 step fieldLength) {
+                diagonally += "${board[i][j]}"
+                y--
+            }
+        }
+
+        checkWinner(diagonally)
     }
 
     private fun checkWinner(str: String) {
@@ -311,6 +318,70 @@ class TicTacToe(private var fieldLength: Int = 3) {
 //        }
 //        if (playerWin != null) {
 //            endGame = true
+//        }
+//    }
+
+    /**
+     * Old function: check the entire game board
+     */
+//    private fun checkBoardHorizontallyAndVertically() {
+//        for (i in 0 until fieldLength) {
+//            var rowX = ""
+//            var rowY = ""
+//            for (j in 0 until fieldLength) {
+//                rowX += board[i][j]
+//                rowY += board[j][i]
+//            }
+//            checkWinner(rowX)
+//            checkWinner(rowY)
+//        }
+//    }
+
+    /**
+     * Old function: Check diagonally from top/left to right
+     */
+//    private fun checkBoardDiagonallyXY() {
+//        for (k in 0 until fieldLength) {
+//            var diagonallyX = ""
+//            var diagonallyY = ""
+//            for (i in 0 until fieldLength) {
+//                for (j in i + k until fieldLength step fieldLength) {
+//                    diagonallyX += "${board[i][j]}"
+//                    diagonallyY += "${board[j][i]}"
+//                }
+//            }
+//            checkWinner(diagonallyX)
+//            checkWinner(diagonallyY)
+//        }
+//    }
+
+    /**
+     * Old function: Check diagonally from top/right to bottom
+     */
+//    private fun checkBoardDiagonallyY() {
+//        for (k in 0 until fieldLength) {
+//            var diagonally = ""
+//            for (i in 0 + k until fieldLength) {
+//                for (j in fieldLength - 1 - i + k downTo 0 step fieldLength) {
+//                    diagonally += "${board[i][j]}"
+//                }
+//            }
+//            checkWinner(diagonally)
+//        }
+//    }
+
+    /**
+     * Old function: Check diagonally from top/right to left
+     */
+//    private fun checkBoardDiagonallyX() {
+//        for (k in 0 until fieldLength) {
+//            var diagonally = ""
+//            for (i in 0 until fieldLength) {
+//                for (j in fieldLength - 1 - k - i  downTo 0 step fieldLength) {
+//                    diagonally += "${board[i][j]}"
+//                }
+//            }
+//            checkWinner(diagonally)
 //        }
 //    }
 }
